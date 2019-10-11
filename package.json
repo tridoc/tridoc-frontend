@@ -1,8 +1,9 @@
 {
-  "name": "tridoc-frontend",
+  "name": "@tridoc/frontend",
   "version": "1.0.0",
   "description": "Simple tridoc JS library for frontent applications",
-  "main": "src/server.js",
+  "browser": "src/server.js",
+  "public": true,
   "dependencies": {},
   "devDependencies": {},
   "scripts": {},
