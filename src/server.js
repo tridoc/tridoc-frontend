@@ -1,4 +1,10 @@
 export default class Server {
+    /**
+     * 
+     * @param {string} url 
+     * @param {string} [username]
+     * @param {string} [password] 
+     */
     constructor(url, username, password) {
         if (url.startsWith("http")) {
             this.url = url;
@@ -15,6 +21,13 @@ export default class Server {
         this.postHeaders.set('Content-Type', 'application/json');
     }
 
+    /**
+     * Adds a tag to the specified document.
+     * @param {string} id - Id of the document
+     * @param {string} label - Label of the tag
+     * @param {string} [type] - For parameterizable tags only: Type of the tag
+     * @param {(string|number)} [value] - For parameterizable tags only: Value for the tag
+     */
     addTag(id, label, type, value) {
         let body = {
             'label': label
