@@ -1,0 +1,19 @@
+{
+  "name": "tridoc-frontend",
+  "version": "1.0.0",
+  "description": "Simple tridoc JS library for frontent applications",
+  "main": "src/server.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tridoc/tridoc-frontend.git"
+  },
+  "author": "@nleanba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tridoc/tridoc-frontend/issues"
+  },
+  "homepage": "https://github.com/tridoc/tridoc-frontend#readme"
+}
