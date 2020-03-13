@@ -1,6 +1,7 @@
 export default class Server {
     /**
      * 
+     * @constructor
      * @param {string} url 
      * @param {string} [username]
      * @param {string} [password] 
