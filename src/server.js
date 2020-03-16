@@ -87,6 +87,10 @@ export default class Server {
         return id ? fetch(this.url + "/doc/" + id + "/tag", { headers: this.headers }).then(r => r.json()) : fetch(this.url + "/tag", { headers: this.headers }).then(r => r.json());
     }
 
+    getMeta(id) {
+        return fetch(this.url + "/doc/" + id + "/meta", { headers: this.headers }).then(r => r.json());
+    }
+
     removeTag(id, label) {
         return fetch(this.url + "/doc/" + id + "/tag/" + label, {
             method: "DELETE",
