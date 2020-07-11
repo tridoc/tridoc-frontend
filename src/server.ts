@@ -110,8 +110,12 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    countDocuments(query: string, tagsQuery: string, notTagsQuery: string): Promise< tdError | number > {
-        return fetch(this.url + "/count?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery, { headers: this.headers })
+    countDocuments(query = '', tags: string[] = [], notTags: string[] = []): Promise< tdError | number > {
+        let params = new URLSearchParams()
+        params.append('text', query)
+        tags.forEach(t => params.append('tag', t))
+        notTags.forEach(t => params.append('tag', t))
+        return fetch(this.url + "/count?" + params, { headers: this.headers })
             .then(r => r.json());
     }
 
@@ -154,8 +158,14 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number|'', offset: number|''): Promise< tdError | tdDoc[] > {
-        return fetch(this.url + "/doc?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset,
+    getDocuments(query: string = '', tags: string[] = [], notTags: string[] = [], limit: number|'' = '', offset: number|'' = ''): Promise< tdError | tdDoc[] > {
+        let params = new URLSearchParams()
+        params.append('text', query)
+        tags.forEach(t => params.append('tag', t))
+        notTags.forEach(t => params.append('tag', t))
+        params.append('limit', '' + limit)
+        params.append('offset', '' + offset)
+        return fetch(this.url + "/doc?" + params,
             { headers: this.headers }).then(r => r.json());
     }
 
