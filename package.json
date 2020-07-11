@@ -2,11 +2,20 @@
   "name": "@tridoc/frontend",
   "version": "1.1.1",
   "description": "Simple tridoc JS library for frontent applications",
-  "browser": "src/server.js",
+  "browser": "lib/server.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "public": true,
   "dependencies": {},
-  "devDependencies": {},
-  "scripts": {},
+  "devDependencies": {
+    "typescript": "^3.9.6"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tridoc/tridoc-frontend.git"

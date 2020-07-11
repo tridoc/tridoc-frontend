@@ -1,4 +1,53 @@
+type tdTagTypes = 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date';
+
+interface tdError {
+    statusCode: number;
+    error: string;
+    message: string;
+}
+
+interface tdTag {
+    label: string
+    parameter?: {
+        type: tdTagTypes;
+    }
+}
+
+interface tdDocTag extends tdTag {
+    parameter?: {
+        type: tdTagTypes;
+        value: string|number;
+    }
+}
+
+interface tdComment {
+    text: string;
+}
+
+interface tdDocComment extends tdComment {
+    text: string;
+    created: string;
+}
+
+interface tdDoc {
+    identifier: string;
+    title?: string;
+    created: string;
+}
+
+interface tdDocMeta {
+    identifier: string;
+    title?: string;
+    created: string;
+    tags?: tdDocTag[];
+    comments?: tdDocComment[];
+}
+
 export default class Server {
+    url: string;
+    private headers: Headers;
+    private postHeaders: Headers;
+
     /**
      * 
      * @constructor
@@ -6,7 +55,7 @@ export default class Server {
      * @param {string} [username]
      * @param {string} [password] 
      */
-    constructor(url, username, password) {
+    constructor(url: string, username: string, password: string) {
         if (url.startsWith("http")) {
             this.url = url;
         } else {
@@ -14,11 +63,10 @@ export default class Server {
         }
 
         this.headers = new Headers();
-        if (username && password) {
-            this.headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
-        }
+        this.headers.set('Authorization', 'Basic ' + btoa(username + ":" + password));
+
         this.postHeaders = new Headers();
-        this.postHeaders.set('Authorization', this.headers.get('Authorization'));
+        this.postHeaders.set('Authorization', this.headers.get('Authorization')!);
         this.postHeaders.set('Content-Type', 'application/json');
     }
 
@@ -29,13 +77,13 @@ export default class Server {
      * @param {string} [type] - For parameterizable tags only: Type of the tag
      * @param {(string|number)} [value] - For parameterizable tags only: Value for the tag
      */
-    addTag(id, label, type, value) {
-        let body = {
+    addTag(id: string, label: string, type?: 'decimal'|'date', value?: string|number): Promise< tdError | { [key: string]: any} > {
+        let body: tdDocTag = {
             'label': label
         };
-        if (type) {
+        if (type && value) {
             body.parameter = {
-                "type": "http://www.w3.org/2001/XMLSchema#" + type,
+                "type": ("http://www.w3.org/2001/XMLSchema#" + type as tdTagTypes),
                 "value": value
             };
         }
@@ -46,16 +94,17 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    countDocuments(query, tagsQuery, notTagsQuery) {
-        return fetch(this.url + "/count?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery, { headers: this.headers }).then(r => r.json());
+    countDocuments(query: string, tagsQuery: string, notTagsQuery: string): Promise< tdError | number > {
+        return fetch(this.url + "/count?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery, { headers: this.headers })
+            .then(r => r.json());
     }
 
-    createTag(label, type) {
-        let body = {
+    createTag(label: any, type?: 'decimal'|'date'): Promise< tdError | { [key: string]: any} > {
+        let body: tdTag = {
             'label': label
         };
         if (type) {
-            body.parameter = { "type": "http://www.w3.org/2001/XMLSchema#" + type };
+            body.parameter = { "type": ("http://www.w3.org/2001/XMLSchema#" + type as tdTagTypes) };
         }
         return fetch(this.url + "/tag", {
             method: "POST",
@@ -64,41 +113,41 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    deleteDocument(id) {
+    deleteDocument(id: string): Promise< tdError | { [key: string]: any} > {
         return fetch(this.url + "/doc/" + id, {
             method: "DELETE",
             headers: this.headers
         });
     }
 
-    deleteTag(label) {
+    deleteTag(label: string): Promise< tdError | { [key: string]: any} > {
         return fetch(this.url + "/tag/" + encodeURIComponent(label), {
             method: "DELETE",
             headers: this.headers
         }).then(r => r.json());
     }
 
-    getDocuments(query, tagsQuery, notTagsQuery, limit, offset) {
+    getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number, offset: number): Promise< tdError | tdDoc[] > {
         return fetch(this.url + "/doc?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset,
             { headers: this.headers }).then(r => r.json());
     }
 
-    getTags(id) {
+    getTags(id?: string): Promise< tdError | tdTag[] > {
         return id ? fetch(this.url + "/doc/" + id + "/tag", { headers: this.headers }).then(r => r.json()) : fetch(this.url + "/tag", { headers: this.headers }).then(r => r.json());
     }
 
-    getMeta(id) {
+    getMeta(id: string): Promise< tdError | tdDocMeta > {
         return fetch(this.url + "/doc/" + id + "/meta", { headers: this.headers }).then(r => r.json());
     }
 
-    removeTag(id, label) {
+    removeTag(id: string, label: string): Promise< tdError | { [key: string]: any} > {
         return fetch(this.url + "/doc/" + id + "/tag/" + label, {
             method: "DELETE",
             headers: this.headers
         });
     }
 
-    setDocumentTitle(id, title) {
+    setDocumentTitle(id: string, title: string): Promise< tdError | string > {
         let body = {
             'title': title
         };
@@ -106,15 +155,15 @@ export default class Server {
             method: "PUT",
             headers: this.postHeaders,
             body: JSON.stringify(body)
-        })
+        }).then(r => r.json());
     }
 
-    uploadFile(file) {
+    uploadFile(file: File): Promise< tdError | { success: true; location: string } > {
         if (file.type != "application/pdf") {
             return Promise.reject("Please provide a pdf document")
         } else {
             let pdfHeaders = new Headers();
-            pdfHeaders.set('Authorization', this.headers.get('Authorization'));
+            pdfHeaders.set('Authorization', this.headers.get('Authorization')!);
             pdfHeaders.set('Content-Type', 'application/pdf');
             return fetch(this.url + "/doc", {
                 method: "POST",
