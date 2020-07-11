@@ -114,7 +114,7 @@ export default class Server {
         let params = new URLSearchParams()
         params.append('text', query)
         tags.forEach(t => params.append('tag', t))
-        notTags.forEach(t => params.append('tag', t))
+        notTags.forEach(t => params.append('nottag', t))
         return fetch(this.url + "/count?" + params, { headers: this.headers })
             .then(r => r.json());
     }
@@ -162,7 +162,7 @@ export default class Server {
         let params = new URLSearchParams()
         params.append('text', query)
         tags.forEach(t => params.append('tag', t))
-        notTags.forEach(t => params.append('tag', t))
+        notTags.forEach(t => params.append('nottag', t))
         params.append('limit', '' + limit)
         params.append('offset', '' + offset)
         return fetch(this.url + "/doc?" + params,
