@@ -127,7 +127,7 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number, offset: number): Promise< tdError | tdDoc[] > {
+    getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number|'', offset: number|''): Promise< tdError | tdDoc[] > {
         return fetch(this.url + "/doc?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset,
             { headers: this.headers }).then(r => r.json());
     }
