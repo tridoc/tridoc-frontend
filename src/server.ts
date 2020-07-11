@@ -73,6 +73,22 @@ export default class Server {
     /**
      * Adds a tag to the specified document.
      * @param {string} id - Id of the document
+     * @param {string} content - Text content of the comment
+     */
+    addComment(id: string, content: string): Promise< tdError | { [key: string]: any} > {
+        let body = {
+            'text': content
+        };
+        return fetch(this.url + "/doc/" + id + "/comment", {
+            method: "POST",
+            headers: this.postHeaders,
+            body: JSON.stringify(body)
+        }).then(r => r.json());
+    }
+
+    /**
+     * Adds a tag to the specified document.
+     * @param {string} id - Id of the document
      * @param {string} label - Label of the tag
      * @param {string} [type] - For parameterizable tags only: Type of the tag
      * @param {(string|number)} [value] - For parameterizable tags only: Value for the tag
@@ -127,6 +143,17 @@ export default class Server {
         }).then(r => r.json());
     }
 
+    /**
+     * Gets the comments of the specified document.
+     * @param {string} id - Id of the document
+     */
+    getComments(id: string): Promise< tdError | tdDocComment[] > {
+        return fetch(this.url + "/doc/" + id + "/comment", {
+            method: "GET",
+            headers: this.headers,
+        }).then(r => r.json());
+    }
+
     getDocuments(query: string, tagsQuery: string, notTagsQuery: string, limit: number|'', offset: number|''): Promise< tdError | tdDoc[] > {
         return fetch(this.url + "/doc?text=" + encodeURIComponent(query) + tagsQuery + notTagsQuery + "&limit=" + limit + "&offset=" + offset,
             { headers: this.headers }).then(r => r.json());
@@ -138,6 +165,16 @@ export default class Server {
 
     getMeta(id: string): Promise< tdError | tdDocMeta > {
         return fetch(this.url + "/doc/" + id + "/meta", { headers: this.headers }).then(r => r.json());
+    }
+
+    /**
+     * Get version of backend.
+     */
+    getVersion(): Promise< tdError | string > {
+        return fetch(this.url + "/version", {
+            method: "GET",
+            headers: this.headers,
+        }).then(r => r.json());
     }
 
     removeTag(id: string, label: string): Promise< tdError | { [key: string]: any} > {
