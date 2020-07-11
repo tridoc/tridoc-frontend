@@ -3,8 +3,8 @@
   "version": "1.2.0",
   "description": "Simple tridoc JS library for frontent applications",
   "browser": "lib/server.js",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/server.js",
+  "types": "lib/server.d.ts",
   "public": true,
   "dependencies": {},
   "devDependencies": {
