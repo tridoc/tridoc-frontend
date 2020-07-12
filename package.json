@@ -1,6 +1,6 @@
 {
   "name": "@tridoc/frontend",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Simple tridoc JS library for frontent applications",
   "browser": "lib/server.js",
   "main": "lib/server.js",
