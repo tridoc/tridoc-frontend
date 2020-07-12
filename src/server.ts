@@ -45,8 +45,8 @@ interface tdDocMeta {
 
 export default class Server {
     url: string;
-    private headers: Headers;
-    private postHeaders: Headers;
+    headers: Headers;
+    postHeaders: Headers;
 
     /**
      * 
