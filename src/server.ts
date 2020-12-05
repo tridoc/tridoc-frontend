@@ -1,5 +1,11 @@
 type tdTagTypes = 'http://www.w3.org/2001/XMLSchema#decimal' | 'http://www.w3.org/2001/XMLSchema#date';
 
+type tdQueryTag = [
+    string,
+    (string|number)?,
+    (string|number)?,
+]
+
 interface tdError {
     statusCode: number;
     error: string;
@@ -110,11 +116,27 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    countDocuments(query = '', tags: string[] = [], notTags: string[] = []): Promise< tdError | number > {
+    countDocuments(query = '', tags: (string|tdQueryTag)[] = [], notTags: (string|tdQueryTag)[] = []): Promise< tdError | number > {
         let params = new URLSearchParams()
         params.append('text', query)
-        tags.forEach(t => params.append('tag', t))
-        notTags.forEach(t => params.append('nottag', t))
+        tags.forEach(t => {
+            if (Array.isArray(t)) {
+                const min = t[1]? t[1].toString() : ''
+                const max = t[2]? t[2].toString() : ''
+                params.append('tag', `${t[0]};${min};${max}`)
+            } else {
+                params.append('tag', t)
+            }
+        })
+        notTags.forEach(t => {
+            if (Array.isArray(t)) {
+                const min = t[1]? t[1].toString() : ''
+                const max = t[2]? t[2].toString() : ''
+                params.append('tag', `${t[0]};${min};${max}`)
+            } else {
+                params.append('tag', t)
+            }
+        })
         return fetch(this.url + "/count?" + params, { headers: this.headers })
             .then(r => r.json());
     }
@@ -158,11 +180,27 @@ export default class Server {
         }).then(r => r.json());
     }
 
-    getDocuments(query: string = '', tags: string[] = [], notTags: string[] = [], limit: number|'' = '', offset: number|'' = ''): Promise< tdError | tdDoc[] > {
+    getDocuments(query: string = '', tags: (string|tdQueryTag)[] = [], notTags: (string|tdQueryTag)[] = [], limit: number|'' = '', offset: number|'' = ''): Promise< tdError | tdDoc[] > {
         let params = new URLSearchParams()
         params.append('text', query)
-        tags.forEach(t => params.append('tag', t))
-        notTags.forEach(t => params.append('nottag', t))
+        tags.forEach(t => {
+            if (Array.isArray(t)) {
+                const min = t[1]? t[1].toString() : ''
+                const max = t[2]? t[2].toString() : ''
+                params.append('tag', `${t[0]};${min};${max}`)
+            } else {
+                params.append('tag', t)
+            }
+        })
+        notTags.forEach(t => {
+            if (Array.isArray(t)) {
+                const min = t[1]? t[1].toString() : ''
+                const max = t[2]? t[2].toString() : ''
+                params.append('tag', `${t[0]};${min};${max}`)
+            } else {
+                params.append('tag', t)
+            }
+        })
         params.append('limit', '' + limit)
         params.append('offset', '' + offset)
         return fetch(this.url + "/doc?" + params,
