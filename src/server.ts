@@ -132,9 +132,9 @@ export default class Server {
             if (Array.isArray(t)) {
                 const min = t[1]? t[1].toString() : ''
                 const max = t[2]? t[2].toString() : ''
-                params.append('tag', `${t[0]};${min};${max}`)
+                params.append('nottag', `${t[0]};${min};${max}`)
             } else {
-                params.append('tag', t)
+                params.append('nottag', t)
             }
         })
         return fetch(this.url + "/count?" + params, { headers: this.headers })
@@ -196,9 +196,9 @@ export default class Server {
             if (Array.isArray(t)) {
                 const min = t[1]? t[1].toString() : ''
                 const max = t[2]? t[2].toString() : ''
-                params.append('tag', `${t[0]};${min};${max}`)
+                params.append('nottag', `${t[0]};${min};${max}`)
             } else {
-                params.append('tag', t)
+                params.append('nottag', t)
             }
         })
         params.append('limit', '' + limit)
