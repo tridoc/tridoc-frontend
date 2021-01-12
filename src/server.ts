@@ -240,7 +240,11 @@ export default class Server {
             method: "PUT",
             headers: this.postHeaders,
             body: JSON.stringify(body)
-        }).then(r => r.json());
+        }).then(r => r.text() || {
+            statusCode: 0,
+            error: 'Unknown error occured while setting title',
+            message: 'Recieved following response from server: ' + r,
+        });
     }
 
     uploadFile(file: File): Promise< tdError | { success: true; location: string } > {
